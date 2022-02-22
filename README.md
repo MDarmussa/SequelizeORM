@@ -1,5 +1,6 @@
 
 Sequelize ORM(Object-Relational-Mapper (ORM) libraries)
+Object-Relational-Mapper (ORM) libraries, which gives you special Objects that represent tables in a database. Instead of writing SQL, you call these Objects' methods to insert, retrieve, update, or delete rows.
 
 - https://sequelize.org/v6/index.html  //more info to know about Sequelizing
 

@@ -5,7 +5,7 @@ const port = 3005;
 const Sequelize = require('sequelize');
 const { User } = require('./models');
 
-app.use(express.json());
+app.use(express.json()); //Middleware
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -49,7 +49,7 @@ app.post('/users', async (req, res) => {
  app.get('/users/:id', async (req, res) => {
      try{
          const oneUser = await User.findByPk(req.params.id);
-         if (!oneUser) throw new Error('id not found')
+         if (!oneUser) throw new Error('id not found') 
          res.json(oneUser);
      } catch (e) {
          console.log(e);
@@ -68,7 +68,7 @@ app.post('/users/search', async (req, res) => {
              [Sequelize.Op.or]: [
                  { 
                      firstName: req.body.termF,
-                     lastName: req.body.termL
+                    //  lastName: req.body.termL
                  }
              ]
          }
@@ -98,6 +98,15 @@ app.patch('/users/:id', async (req, res) => {
      res.json(updatedUser);
  });
 
+ app.delete('/users/:id', async (req, res) => {
+    const { id } = req.params;
+    const deletedUser = await User.destroy({
+        where: {
+            id
+        }
+    });
+    res.json(deletedUser);
+});
 
 
 
