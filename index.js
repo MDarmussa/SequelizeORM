@@ -1,24 +1,37 @@
-
 const express = require('express');
+const res = require('express/lib/response');
 const app = express();
 const port = 3005;
 const Sequelize = require('sequelize');
-const { User } = require('./models');
+const { User, Photo } = require('./models');
 
 app.use(express.json()); //Middleware
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-})
+// app.get('/', (req, res) => {
+//   res.send('Hello World!');
+// })
 
 //queries 
-app.get('/users', async (req, res) => {
-     const users = await User.findAll({
-          attributes: ['email']
-     });
-     res.json(users);
-     console.log(users)
- });
+// app.get('/users', async (req, res) => {
+//      const users = await User.findAll({
+//           attributes: ['email']
+//      });
+//      res.json(users);
+//      console.log(users)
+//  });
+
+ // Get users & photos // day 2
+
+ app.get('/users/photos', async (req, res) => {
+    const users = await User.findAll({ //all encompassing way to interact with the db model
+        include: [{
+            model: Photo //imports the photo model
+        }]
+    });
+    res.json(users);
+});
+
+
 
 
  //posting fname, lname, email
@@ -36,6 +49,7 @@ app.post('/users', async (req, res) => {
          id: newUser.id
      });
  })
+
 
 
  //find row by id (pk == primary key)
@@ -61,20 +75,44 @@ app.post('/users', async (req, res) => {
 
 
 //  To do a text search, use a where option (Search Users):
-app.post('/users/search', async (req, res) => {
-     console.log(req.body)
-     const users = await User.findAll({
-         where: {
-             [Sequelize.Op.or]: [
-                 { 
-                     firstName: req.body.termF,
-                    //  lastName: req.body.termL
-                 }
-             ]
-         }
-     });
-     res.json(users);
- });
+// app.post('/users/search', async (req, res) => {
+//      console.log(req.body)
+//      const users = await User.findAll({
+//          where: {
+//              [Sequelize.Op.or]: [
+//                  { 
+//                      firstName: req.body.termF,
+//                     //  lastName: req.body.termL
+//                  }
+//              ]
+//          }
+//      });
+//      res.json(users);
+//  });
+
+
+ //post -- day 2
+ app.post('/users/search', async (req, res) => {
+    console.log(req.body)
+    const users = await User.findAll({
+        where: {
+            [Sequelize.Op.or]: [
+                { 
+                   firstName: req.body.firstName,
+                   lastName: req.body.lastName
+                },
+            ],
+        },
+        include: [
+            {
+                model: Photo,
+            },
+        ]
+    });
+    res.json(users);
+});
+
+
 
 //  to search on postman
 //  {
